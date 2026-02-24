@@ -1,5 +1,11 @@
 # 💳 FinSecure AI – Enterprise Fraud Detection System
 
+![Streamlit](https://img.shields.io/badge/Deployed-Streamlit%20Cloud-FF4B4B?logo=streamlit&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
+![XGBoost](https://img.shields.io/badge/Model-XGBoost-green)
+![Status](https://img.shields.io/badge/Status-Live-success)
+![License](https://img.shields.io/badge/License-Portfolio-lightgrey)
+
 🚀 **Live Application:**  
 👉 https://finsecure-ai---enterprise-fraud-detection-system-se2zrceioks8z.streamlit.app/
 
