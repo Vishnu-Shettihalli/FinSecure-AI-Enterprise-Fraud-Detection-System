@@ -26,6 +26,7 @@ st.markdown("""
     body {background-color: #0E1117;}
     .main {background-color: #0E1117;}
     h1, h2, h3, h4 {color: white;}
+    .stMetric {text-align: center;}
     </style>
 """, unsafe_allow_html=True)
 
@@ -35,7 +36,10 @@ scaler = joblib.load("models/scaler.pkl")
 
 # ---------------- BRANDING ----------------
 st.title("💳 FinSecure AI")
-st.markdown("### Enterprise-Grade Fraud Detection & Risk Intelligence Platform")
+st.markdown("""
+### Enterprise Fraud Intelligence Platform  
+Real-time transaction risk scoring powered by XGBoost & Advanced ML Optimization
+""")
 st.markdown("---")
 
 # ---------------- SIDEBAR ----------------
@@ -53,6 +57,17 @@ mode = st.sidebar.radio(
     "Input Mode",
     ["Demo Mode", "Upload CSV"]
 )
+
+# ---------------- MODEL PERFORMANCE ----------------
+st.sidebar.markdown("---")
+st.sidebar.subheader("📊 Model Performance")
+st.sidebar.markdown("""
+- **ROC-AUC:** 0.97+  
+- **Algorithm:** XGBoost  
+- **Data Handling:** SMOTE Balancing  
+- **Threshold:** Adjustable Decision Control  
+- **Deployment:** Streamlit Cloud  
+""")
 
 # ---------------- INPUT SECTION ----------------
 if mode == "Demo Mode":
@@ -133,12 +148,10 @@ if st.button("🚀 Analyze Transaction"):
     st.subheader("🧠 Model Explainability (SHAP)")
 
     if shap_available:
-
         try:
             explainer = shap.TreeExplainer(model)
             shap_values = explainer.shap_values(input_df)
 
-            # Global SHAP Importance
             st.subheader("📊 Global Feature Impact")
 
             fig_summary = plt.figure()
@@ -150,7 +163,6 @@ if st.button("🚀 Analyze Transaction"):
             )
             st.pyplot(fig_summary)
 
-            # Local SHAP Explanation
             st.subheader("🔎 Individual Transaction Explanation")
 
             fig_force = plt.figure()
@@ -163,8 +175,14 @@ if st.button("🚀 Analyze Transaction"):
             )
             st.pyplot(fig_force)
 
-        except Exception as e:
+        except:
             st.warning("SHAP explanation temporarily unavailable in this environment.")
-
     else:
         st.info("Model explainability (SHAP) disabled in cloud deployment.")
+
+# ---------------- FOOTER ----------------
+st.markdown("---")
+st.markdown(
+    "© 2026 FinSecure AI | Built by Vishnu Shettihalli | ML Deployment Project",
+    unsafe_allow_html=True
+)
