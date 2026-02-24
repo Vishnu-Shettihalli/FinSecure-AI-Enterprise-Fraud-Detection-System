@@ -5,6 +5,7 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import datetime
+import os
 
 # ---------------- SAFE SHAP IMPORT ----------------
 try:
@@ -121,18 +122,24 @@ if st.button("🚀 Analyze Transaction"):
 
         st.progress(float(prob))
 
-    # ---------------- HISTORY LOGGING ----------------
-    history = input_df.copy()
-    history["Fraud_Probability"] = probabilities
-    history["Threshold"] = threshold
-    history["Timestamp"] = datetime.datetime.now()
+    # ---------------- HISTORY LOGGING (CLOUD SAFE) ----------------
+    try:
+        os.makedirs("outputs", exist_ok=True)
 
-    history.to_csv(
-        "outputs/prediction_history.csv",
-        mode="a",
-        header=False,
-        index=False
-    )
+        history = input_df.copy()
+        history["Fraud_Probability"] = probabilities
+        history["Threshold"] = threshold
+        history["Timestamp"] = datetime.datetime.now()
+
+        history.to_csv(
+            "outputs/prediction_history.csv",
+            mode="a",
+            header=not os.path.exists("outputs/prediction_history.csv"),
+            index=False
+        )
+
+    except Exception:
+        st.warning("Logging temporarily unavailable in cloud environment.")
 
     # ---------------- DOWNLOAD REPORT ----------------
     csv = history.to_csv(index=False).encode("utf-8")
@@ -175,7 +182,7 @@ if st.button("🚀 Analyze Transaction"):
             )
             st.pyplot(fig_force)
 
-        except:
+        except Exception:
             st.warning("SHAP explanation temporarily unavailable in this environment.")
     else:
         st.info("Model explainability (SHAP) disabled in cloud deployment.")
