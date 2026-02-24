@@ -5,7 +5,13 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import datetime
-import shap
+
+# ---------------- SAFE SHAP IMPORT ----------------
+try:
+    import shap
+    shap_available = True
+except:
+    shap_available = False
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
@@ -66,15 +72,11 @@ else:
         st.stop()
 
 # ---------------- FEATURE ALIGNMENT ----------------
-
-# Drop Class column if uploaded
 if "Class" in input_df.columns:
     input_df = input_df.drop("Class", axis=1)
 
-# Ensure correct column order
 input_df = input_df[model.feature_names_in_]
 
-# Scale if needed
 if "Amount" in input_df.columns and "Time" in input_df.columns:
     input_df[['Amount', 'Time']] = scaler.transform(
         input_df[['Amount', 'Time']]
@@ -130,29 +132,39 @@ if st.button("🚀 Analyze Transaction"):
     st.markdown("---")
     st.subheader("🧠 Model Explainability (SHAP)")
 
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer.shap_values(input_df)
+    if shap_available:
 
-    # Global SHAP Importance
-    st.subheader("📊 Global Feature Impact")
-    fig_summary = plt.figure()
-    shap.summary_plot(
-        shap_values,
-        input_df,
-        plot_type="bar",
-        show=False
-    )
-    st.pyplot(fig_summary)
+        try:
+            explainer = shap.TreeExplainer(model)
+            shap_values = explainer.shap_values(input_df)
 
-    # Local SHAP Explanation (First Transaction)
-    st.subheader("🔎 Individual Transaction Explanation")
+            # Global SHAP Importance
+            st.subheader("📊 Global Feature Impact")
 
-    fig_force = plt.figure()
-    shap.force_plot(
-        explainer.expected_value,
-        shap_values[0],
-        input_df.iloc[0],
-        matplotlib=True,
-        show=False
-    )
-    st.pyplot(fig_force)
+            fig_summary = plt.figure()
+            shap.summary_plot(
+                shap_values,
+                input_df,
+                plot_type="bar",
+                show=False
+            )
+            st.pyplot(fig_summary)
+
+            # Local SHAP Explanation
+            st.subheader("🔎 Individual Transaction Explanation")
+
+            fig_force = plt.figure()
+            shap.force_plot(
+                explainer.expected_value,
+                shap_values[0],
+                input_df.iloc[0],
+                matplotlib=True,
+                show=False
+            )
+            st.pyplot(fig_force)
+
+        except Exception as e:
+            st.warning("SHAP explanation temporarily unavailable in this environment.")
+
+    else:
+        st.info("Model explainability (SHAP) disabled in cloud deployment.")
