@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/License-Portfolio-lightgrey)
 
 🚀 **Live Application:**  
-👉 https://finsecure-ai---enterprise-fraud-detection-system-se2zrceioks8z.streamlit.app/
+👉 https://finsecure-ai-enterprise-fraud-detection.streamlit.app/
 
 ---
 
